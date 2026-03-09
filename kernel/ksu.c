@@ -30,7 +30,8 @@
 // Therefore, ksu lkm, which uses gki toolchain, requires this __stack_chk_guard,
 // while those third-party kernel can't provide.
 // Thus, we manually provide it instead of using kernel's
-#if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
+#if defined(CONFIG_STACKPROTECTOR) &&                                          \
+    (defined(CONFIG_ARM64) && !defined(CONFIG_STACKPROTECTOR_PER_TASK))
 #include <linux/stackprotector.h>
 #include <linux/random.h>
 unsigned long __stack_chk_guard __ro_after_init
@@ -68,7 +69,8 @@ int __init kernelsu_init(void)
     pr_info("Initialized on: %s (%s) with driver version: %u\n", UTS_RELEASE,
             UTS_MACHINE, KSU_VERSION);
 #ifdef MODULE
-#if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
+#if defined(CONFIG_STACKPROTECTOR) &&                                          \
+    (defined(CONFIG_ARM64) && !defined(CONFIG_STACKPROTECTOR_PER_TASK))
     unsigned long canary;
 
     /* Try to get a semi random initial value. */
